@@ -125,6 +125,118 @@ table.res100 a{color:var(--teal);font-weight:700}
       <div class="stat"><strong>180</strong><span>compulsory MCQs</span></div><div class="stat"><strong>720</strong><span>total marks</span></div><div class="stat"><strong>180</strong><span>minutes</span></div><div class="stat"><strong>+4 / −1</strong><span>correct / incorrect</span></div><div class="stat"><strong>90</strong><span>Biology questions</span></div>
     </div>
   </div></header>
+<!-- UX-UPGRADE-20260930 -->
+<style>
+.sf-wrap{margin:16px 0;max-width:680px}
+#sfSearch{width:100%;padding:12px 16px;font-size:16px;border-radius:12px;border:1px solid rgba(127,127,127,.4);background:rgba(127,127,127,.08);color:inherit;box-sizing:border-box}
+#sfSearch::placeholder{color:inherit;opacity:.6}
+.sf-trending{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px;font-size:13px}
+.sf-chip{padding:6px 12px;border-radius:999px;border:1px solid rgba(127,127,127,.4);background:transparent;color:inherit;cursor:pointer;font-size:13px}
+.sf-chip:hover{background:rgba(127,127,127,.18)}
+#sfResults{list-style:none;margin:8px 0 0;padding:0;border:1px solid rgba(127,127,127,.35);border-radius:12px;overflow:hidden}
+#sfResults[hidden]{display:none}
+#sfResults li{margin:0;padding:0}
+#sfResults a{display:block;padding:10px 14px;color:inherit;text-decoration:none;font-size:14px;border-bottom:1px solid rgba(127,127,127,.15)}
+#sfResults li:last-child a{border-bottom:0}
+#sfResults a:hover{background:rgba(127,127,127,.18)}
+.sf-flash{outline:2px solid #f59e0b !important;outline-offset:3px;border-radius:6px}
+.fresh-strip{margin:14px 0;max-width:680px;border:1px solid rgba(127,127,127,.3);border-radius:14px;padding:12px 16px;background:rgba(127,127,127,.06)}
+.fresh-head{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.fresh-badge{background:#16a34a;color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.fresh-strip time{font-size:13px;opacity:.75}
+.fresh-strip ul{margin:0;padding-left:18px;font-size:14px}
+.fresh-strip li{margin:4px 0}
+.fresh-strip a{color:inherit}
+.issue-note{font-size:13px;opacity:.85;margin:10px 0 0}
+</style>
+<div class="sf-wrap" role="search" aria-label="Search this study site">
+<input type="search" id="sfSearch" placeholder="Search chapters, topics, questions&hellip;" autocomplete="off" aria-label="Search chapters, topics and questions">
+<div class="sf-trending"><span>Trending:</span><span id="sfChips"></span></div>
+<ul id="sfResults" hidden></ul>
+</div>
+<section class="fresh-strip" id="fresh-today" aria-label="New today">
+<div class="fresh-head"><span class="fresh-badge">New today</span><time datetime="2026-09-30">30 September 2026</time></div>
+<ul>
+<li>Fresh capsules and practice questions are added here every morning.</li>
+</ul>
+</section>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  var input = document.getElementById('sfSearch');
+  if (!input || input.dataset.sfInit) return;
+  input.dataset.sfInit = '1';
+  var res = document.getElementById('sfResults');
+  var chipsBox = document.getElementById('sfChips');
+  var root = document.querySelector('main') || document.body;
+  var items = [], seen = {};
+  root.querySelectorAll('h2, h3').forEach(function(h, i){
+    if (h.closest('header, nav, footer, #comments')) return;
+    var t = (h.textContent || '').trim().replace(/\s+/g, ' ');
+    if (t.length < 3 || t.length > 90) return;
+    var k = t.toLowerCase();
+    if (seen[k]) return;
+    seen[k] = 1;
+    if (!h.id) h.id = 'sf-h' + i;
+    items.push({t: t, id: h.id, sec: h.closest('section')});
+  });
+  // Trending: first h3 from up to 5 distinct content sections
+  var trend = [], usedSec = {};
+  items.forEach(function(it){
+    if (trend.length >= 5) return;
+    var s = it.sec, key = s ? (s.id || s.className || items.indexOf(it)) : items.indexOf(it);
+    if (usedSec[key]) return;
+    usedSec[key] = 1;
+    trend.push(it);
+  });
+  if (trend.length >= 2) {
+    trend.forEach(function(it){
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'sf-chip';
+      b.textContent = it.t.length > 42 ? it.t.slice(0, 42) + '…' : it.t;
+      b.setAttribute('aria-label', 'Search for ' + it.t);
+      b.addEventListener('click', function(){
+        input.value = it.t; doSearch(it.t); input.focus();
+      });
+      chipsBox.appendChild(b);
+    });
+  } else if (chipsBox && chipsBox.parentElement) {
+    chipsBox.parentElement.style.display = 'none';
+  }
+  function go(id){
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.scrollIntoView({behavior: 'smooth', block: 'start'});
+    el.classList.add('sf-flash');
+    setTimeout(function(){ el.classList.remove('sf-flash'); }, 1600);
+  }
+  function doSearch(q){
+    q = (q || '').trim().toLowerCase();
+    res.innerHTML = '';
+    if (q.length < 2) { res.hidden = true; return; }
+    var hits = items.filter(function(it){ return it.t.toLowerCase().indexOf(q) > -1; }).slice(0, 10);
+    if (!hits.length) { res.hidden = true; return; }
+    hits.forEach(function(it){
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = '#' + it.id; a.textContent = it.t;
+      a.addEventListener('click', function(e){ e.preventDefault(); res.hidden = true; go(it.id); });
+      li.appendChild(a); res.appendChild(li);
+    });
+    res.hidden = false;
+  }
+  input.addEventListener('input', function(){ doSearch(input.value); });
+  input.addEventListener('keydown', function(e){
+    if (e.key === 'Enter') {
+      var first = res.querySelector('a');
+      if (first && !res.hidden) { e.preventDefault(); res.hidden = true; go(first.getAttribute('href').slice(1)); }
+    }
+    if (e.key === 'Escape') { res.hidden = true; }
+  });
+  document.addEventListener('click', function(e){
+    if (!e.target.closest('.sf-wrap')) res.hidden = true;
+  });
+});
+</script>
 
   <section id="syllabus"><div class="wrap">
     <div class="section-head"><div><div class="eyebrow">What to cover</div><h2>The PCB study map</h2></div><p>Use this as a chapter-family map, then reconcile it against the official syllabus for your attempt year. Never trust an old “deleted syllabus” list.</p></div>
@@ -268,7 +380,8 @@ table.res100 a{color:var(--teal);font-weight:700}
   </div></section>
 
   <section id="practice"><div class="wrap">
-    <div class="section-head"><div><div class="eyebrow">Practice with explanations</div><h2>Sixty-question concept bank</h2></div><p>Twenty questions per subject, spread across the syllabus. Commit to an option first, then open the answer for the governing idea and calculation.</p></div>
+    <div class="section-head"><div><div class="eyebrow">Practice with explanations</div><h2>Sixty-question concept bank</h2>
+<p class="issue-note">Spotted a mistake in a question? <a href="#comments">Report it here</a> &mdash; corrections go live in the next daily refresh.</p></div><p>Twenty questions per subject, spread across the syllabus. Commit to an option first, then open the answer for the governing idea and calculation.</p></div>
     <div class="practice-filter" aria-label="Filter practice questions"><button class="qfilter active" data-filter="all">All 60</button><button class="qfilter" data-filter="biology">Biology · 20</button><button class="qfilter" data-filter="chemistry">Chemistry · 20</button><button class="qfilter" data-filter="physics">Physics · 20</button></div>
     <div class="quiz-list">
       <article class="question" data-subject="biology"><div class="qmeta">Biology · Cell</div><h3>1. Which organelle is the principal site of packaging and sorting of proteins received from the ER?</h3><div class="options"><span class="option">A. Lysosome</span><span class="option">B. Golgi apparatus</span><span class="option">C. Peroxisome</span><span class="option">D. Nucleolus</span></div><details class="answer"><summary>Show answer</summary><p><b>B.</b> Proteins from the ER enter the cis face of the Golgi, are modified and sorted through cisternae, and leave from the trans face in vesicles.</p></details></article>
