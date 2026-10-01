@@ -155,12 +155,12 @@ table.res100 a{color:var(--teal);font-weight:700}
 <ul id="sfResults" hidden></ul>
 </div>
 <section class="fresh-strip" id="fresh-today" aria-label="New today">
-<div class="fresh-head"><span class="fresh-badge">New today</span><time datetime="2026-09-30">30 September 2026</time></div>
+<div class="fresh-head"><span class="fresh-badge">New today</span><time datetime="2026-10-01">1 October 2026</time></div>
 <ul>
-<li><a href="#practice">Cell cycle: G1 longest</a></li>
-<li><a href="#practice">Dihybrid cross 9:3:3:1</a></li>
-<li><a href="#practice">Nephron: functional unit of kidney</a></li>
-<li><a href="#practice">Pyramid of energy always upright</a></li>
+<li><a href="#practice">Crossing over in pachytene</a></li>
+<li><a href="#practice">Group O: universal donor</a></li>
+<li><a href="#practice">Peptide bond in proteins</a></li>
+<li><a href="#practice">Rhizobium fixes nitrogen</a></li>
 </ul>
 </section>
 <script>
@@ -497,7 +497,12 @@ document.addEventListener('DOMContentLoaded', function(){
     {"s": "biology", "m": "Biology · Genetics", "q": "70. The phenotypic ratio of a dihybrid cross (F2 generation) is:", "o": ["A. 9:3:3:1", "B. 3:1", "C. 1:2:1", "D. 9:7"], "a": "A. A dihybrid cross gives the classic 9:3:3:1 phenotypic ratio in the F2 generation."},
     {"s": "biology", "m": "Biology · Human physiology", "q": "71. The functional unit of the kidney is the:", "o": ["A. Nephron", "B. Glomerulus", "C. Bowman's capsule", "D. Ureter"], "a": "A. The nephron is the structural and functional unit of the kidney."},
     {"s": "biology", "m": "Biology · Plant physiology", "q": "72. The site of photosynthesis in a plant cell is the:", "o": ["A. Mitochondrion", "B. Chloroplast", "C. Nucleus", "D. Vacuole"], "a": "B. Photosynthesis occurs in the chloroplast, which contains chlorophyll."},
-    {"s": "biology", "m": "Biology · Ecology", "q": "73. The pyramid of energy in any ecosystem is always:", "o": ["A. Inverted", "B. Upright", "C. Spindle-shaped", "D. Variable"], "a": "B. The pyramid of energy is always upright because energy is lost at each trophic level."}];
+    {"s": "biology", "m": "Biology · Ecology", "q": "73. The pyramid of energy in any ecosystem is always:", "o": ["A. Inverted", "B. Upright", "C. Spindle-shaped", "D. Variable"], "a": "B. The pyramid of energy is always upright because energy is lost at each trophic level."},
+    {"s": "biology", "m": "Biology · Cell cycle", "q": "74. Crossing over between homologous chromosomes occurs during which sub-stage of prophase I?", "o": ["A. Leptotene", "B. Zygotene", "C. Pachytene", "D. Diakinesis"], "a": "C. Crossing over occurs during pachytene, when homologous chromosomes are fully synapsed."},
+    {"s": "biology", "m": "Biology · Human physiology", "q": "75. A person with blood group O is called a universal donor because:", "o": ["A. Their plasma has no antibodies", "B. Their RBCs have no A or B antigens", "C. Their blood has no Rh factor", "D. Their WBCs accept all antigens"], "a": "B. Group O RBCs lack A and B antigens, so they are not attacked by anti-A or anti-B antibodies in the recipient."},
+    {"s": "biology", "m": "Biology · Biomolecules", "q": "76. The bond formed between two amino acid molecules during protein synthesis is called a:", "o": ["A. Glycosidic bond", "B. Hydrogen bond", "C. Peptide bond", "D. Ester bond"], "a": "C. A peptide bond forms between the carboxyl group of one amino acid and the amino group of another, releasing water."},
+    {"s": "biology", "m": "Biology · Plant kingdom", "q": "77. The nitrogen-fixing bacterium found in the root nodules of leguminous plants is:", "o": ["A. Azotobacter", "B. Rhizobium", "C. Clostridium", "D. Nitrosomonas"], "a": "B. Rhizobium lives symbiotically in legume root nodules and fixes atmospheric nitrogen."},
+    {"s": "biology", "m": "Biology · Cell", "q": "78. Besides the nucleus, which organelle contains its own circular DNA in animal cells?", "o": ["A. Lysosome", "B. Golgi apparatus", "C. Mitochondrion", "D. Endoplasmic reticulum"], "a": "C. Mitochondria contain their own circular DNA and ribosomes, supporting the endosymbiotic theory."}];
   var quizList=document.querySelector('.quiz-list');
   extraQuestions.forEach(function(item){var article=document.createElement('article');article.className='question';article.setAttribute('data-subject',item.s);article.innerHTML='<div class="qmeta">'+item.m+'</div><h3>'+item.q+'</h3><div class="options">'+item.o.map(function(option){return '<span class="option">'+option+'</span>';}).join('')+'</div><details class="answer"><summary>Show answer</summary><p><b>'+item.a.slice(0,2)+'</b>'+item.a.slice(2)+'</p></details>';quizList.appendChild(article);});
   var tabs=Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
